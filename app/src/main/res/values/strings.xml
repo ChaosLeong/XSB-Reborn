@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">学生帮</string>
+
+    <string name="drawer_settings">设置</string>
+    <string name="drawer_help_feedback">帮助 &amp; 反馈</string>
+
+    <string name="thanks">感谢使用，_(:зゝ∠)_这货是重制版</string>
+
+    <string name="all_type">所有分类</string>
+
+    <string-array name="type_tags">
+        <item>饮食</item>
+        <item>娱乐</item>
+        <item>交通</item>
+        <item>社交</item>
+        <item>医疗</item>
+    </string-array>
+
+    <string-array name="type_titles">
+        <item>系统</item>
+        <item>自定义</item>
+    </string-array>
+
+    <string-array name="drawer_tags">
+        <item>帮助他人</item>
+        <item>聊天信息</item>
+        <item>排行榜</item>
+    </string-array>
+</resources>

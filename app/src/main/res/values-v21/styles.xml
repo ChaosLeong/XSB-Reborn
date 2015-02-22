@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ToolbarTheme" parent="ToolbarTheme.Base">
+        <!--<item name="popupItemBackground">@drawable/popup_item_background</item>-->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="Widget.Toolbar.Spinner" parent="Widget.Toolbar.Spinner.Base">
+        <item name="android:overlapAnchor">true</item>
+        <item name="android:theme">@style/ActionBarThemeOverlay</item>
+    </style>
+</resources>

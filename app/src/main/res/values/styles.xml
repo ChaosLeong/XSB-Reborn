@@ -1,0 +1,69 @@
+<resources>
+
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light">
+        <item name="actionBarIconColor">#fff</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="toolbarStyle">@style/Toolbar</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="windowActionBar">true</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_up</item>
+        <item name="popupItemBackground">?android:selectableItemBackground</item>
+        <item name="android:popupMenuStyle">@style/Widget.Toolbar.PopupMenu</item>
+        <item name="android:listPopupWindowStyle">@style/Widget.Toolbar.PopupMenu</item>
+        <item name="android:dropDownListViewStyle">@style/Widget.Toolbar.ListView.DropDown</item>
+
+        <item name="android:textColorPrimary">#fff</item>
+        <item name="colorControlNormal">?actionBarIconColor</item>
+        <item name="colorControlHighlight">#3fff</item>
+    </style>
+
+    <style name="AppTheme" parent="AppTheme.Base"/>
+
+    <style name="ToolbarTheme.Base" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="windowActionBarOverlay">true</item>
+    </style>
+
+    <style name="ToolbarTheme" parent="ToolbarTheme.Base"/>
+
+    <style name="Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:minHeight">?attr/actionBarSize</item>
+    </style>
+
+    <style name="Toolbar.Spinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:dropDownWidth">160dp</item>
+    </style>
+
+    <style name="ActionBarThemeOverlay" parent="AppTheme">
+        <item name="android:textColorPrimary">#fff</item>
+        <item name="colorControlNormal">?actionBarIconColor</item>
+        <item name="colorControlHighlight">#3fff</item>
+        <item name="windowActionBarOverlay">true</item>
+    </style>
+
+    <style name="Widget.Toolbar.Spinner.Base" parent="Widget.AppCompat.Light.Spinner.DropDown.ActionBar">
+        <item name="android:background">?android:selectableItemBackground</item>
+        <item name="android:dropDownSelector">?android:selectableItemBackground</item>
+        <item name="android:divider">@null</item>
+        <item name="android:dividerHeight">0dp</item>
+    </style>
+
+    <style name="Widget.Toolbar.Spinner" parent="Widget.Toolbar.Spinner.Base"/>
+
+    <style name="ActionBarPopupThemeOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+    <style name="Widget.Toolbar.PopupMenu" parent="Widget.AppCompat.Light.PopupMenu">
+        <item name="android:dropDownSelector">?popupItemBackground</item>
+    </style>
+
+    <style name="Widget.Toolbar.ListView.DropDown" parent="Widget.AppCompat.Light.ListView.DropDown">
+        <item name="android:background">#fff</item>
+        <item name="android:listSelector">?popupItemBackground</item>
+        <item name="android:divider">@null</item>
+        <item name="android:dividerHeight">0dp</item>
+    </style>
+</resources>

@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,25 +27,34 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.avos.avoscloud.AVUser;
 import com.sise.help.chat.ChatFragment;
 import com.sise.help.feedback.FeedbackFragment;
 import com.sise.help.posts.NewPostActivity;
 import com.sise.help.posts.PostsFragment;
 import com.sise.help.rank.RanksFragment;
 import com.sise.help.settings.SettingsFragment;
+import com.sise.help.startup.StartupActivity;
 import com.sise.help.ui.widget.BezelImageView;
 import com.sise.help.ui.widget.ScrimInsetsFrameLayout;
+import com.sise.help.user.User;
+import com.sise.help.user.UserInfoActivity;
 
 import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
+
+    /**
+     * 双击 Back 键退出计时器
+     */
+    private long exitTime = 0;
 
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
     private Spinner mFilter;
     private ImageButton mCreateFab;
 
-    private TextView mEmail;
+    private TextView mIntroduction;
     private TextView mName;
     private BezelImageView mAvatar;
 
@@ -59,6 +69,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setupToolbar();
         mCreateFab = (ImageButton) findViewById(R.id.create);
         mCreateFab.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateUserInfo();
     }
 
     private void setupToolbar() {
@@ -116,12 +132,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         if (navDrawer != null) {
             final View chosenAccountView = getLayoutInflater().inflate(R.layout.nav_drawer_header, null);
             final View chosenAccountContentView = chosenAccountView.findViewById(R.id.chosen_account_content_view);
+            chosenAccountContentView.setOnClickListener(this);
 
-            mEmail = (TextView) chosenAccountView.findViewById(R.id.profile_email_text);
+            mIntroduction = (TextView) chosenAccountView.findViewById(R.id.profile_introduction_text);
             mName = (TextView) chosenAccountView.findViewById(R.id.profile_name_text);
             mAvatar = (BezelImageView) chosenAccountView.findViewById(R.id.profile_image);
 
-            setupUserInfo();
 //            final int navDrawerChosenAccountHeight = getResources().getDimensionPixelSize(R.dimen.navdrawer_chosen_account_height);
             navDrawer.setOnInsetsCallback(new ScrimInsetsFrameLayout.OnInsetsCallback() {
                 @Override
@@ -170,11 +186,22 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setDrawerNavFooterEntry(R.id.drawer_list_feedback, R.drawable.bt_ic_help_g50_24dp, R.string.drawer_help_feedback);
     }
 
-    private void setupUserInfo() {
-        if (mEmail != null && mName != null && mAvatar != null) {
-            mEmail.setText(R.string.thanks);
+    private void updateUserInfo() {
+        if (mIntroduction != null && mName != null && mAvatar != null) {
+            mIntroduction.setText(R.string.thanks);
             mName.setText(getString(R.string.app_name));
             mAvatar.setImageResource(R.drawable.person_image_empty);
+            User user = AVUser.getCurrentUser(User.class);
+            if (user != null) {
+                if (!TextUtils.isEmpty(user.getNickname())) {
+                    mName.setText(user.getNickname());
+                } else {
+                    mName.setText(user.getUsername());
+                }
+                if (!TextUtils.isEmpty(user.getIntroduction())) {
+                    mIntroduction.setText(user.getIntroduction());
+                }
+            }
         }
     }
 
@@ -196,6 +223,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
             mDrawerLayout.closeDrawer(Gravity.START);
+        } else if ((System.currentTimeMillis() - exitTime) > 2000) {
+            Toast.makeText(this, "再次按返回键退出", Toast.LENGTH_SHORT).show();
+            exitTime = System.currentTimeMillis();
         } else {
             super.onBackPressed();
         }
@@ -215,6 +245,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             case R.id.create:
                 startActivity(new Intent(this, NewPostActivity.class));
                 Toast.makeText(this, "NewPostActivity", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.chosen_account_content_view:
+                startActivity(new Intent(this, AVUser.getCurrentUser() == null ? StartupActivity.class : UserInfoActivity.class));
                 break;
         }
     }

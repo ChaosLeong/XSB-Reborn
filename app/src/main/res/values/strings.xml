@@ -28,4 +28,11 @@
         <item>聊天信息</item>
         <item>排行榜</item>
     </string-array>
+
+    <string name="username">帐号</string>
+    <string name="rule_username">0123456789abcdefghijklmnopqrstuvwxyz</string>
+    <string name="password">密码</string>
+    <string name="rule_password">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ`¬!"£$%^*()~=#{}[];':,./?/*-_+&#060;&#062;&#064;&#038;\\\/</string>
+    <string name="sign_in">登录</string>
+    <string name="sign_up">注册</string>
 </resources>

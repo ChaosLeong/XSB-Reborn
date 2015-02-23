@@ -4,6 +4,7 @@
         <item name="actionBarIconColor">#fff</item>
         <item name="android:windowBackground">@android:color/white</item>
         <item name="toolbarStyle">@style/Toolbar</item>
+        <item name="actionBarStyle">@style/ActionBar</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
@@ -13,9 +14,9 @@
         <item name="android:popupMenuStyle">@style/Widget.Toolbar.PopupMenu</item>
         <item name="android:listPopupWindowStyle">@style/Widget.Toolbar.PopupMenu</item>
         <item name="android:dropDownListViewStyle">@style/Widget.Toolbar.ListView.DropDown</item>
-
-        <item name="android:textColorPrimary">#fff</item>
-        <item name="colorControlNormal">?actionBarIconColor</item>
+        <item name="android:editTextStyle">@style/EditText</item>
+        <!--<item name="android:textColorPrimary">#fff</item>-->
+        <item name="colorControlNormal">#BBDEFB</item>
         <item name="colorControlHighlight">#3fff</item>
     </style>
 
@@ -32,6 +33,21 @@
     <style name="Toolbar" parent="Widget.AppCompat.Toolbar">
         <item name="android:background">?attr/colorPrimary</item>
         <item name="android:minHeight">?attr/actionBarSize</item>
+        <item name="android:textColorPrimary">@color/title_color</item>
+    </style>
+
+    <style name="ActionBar" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:minHeight">?attr/actionBarSize</item>
+        <item name="titleTextStyle">@style/TitleText</item>
+    </style>
+
+    <style name="TitleText" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/title_color</item>
+    </style>
+
+    <style name="EditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textColorHint">#BDBDBD</item>
     </style>
 
     <style name="Toolbar.Spinner" parent="Widget.AppCompat.Spinner">

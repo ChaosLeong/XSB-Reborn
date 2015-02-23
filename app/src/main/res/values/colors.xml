@@ -2,7 +2,7 @@
 <resources>
     <color name="primary">#4CAF50</color>
     <color name="primary_dark">#43A047</color>
-    <color name="accent">#fbc02d</color>
+    <color name="accent">#1E88E5</color>
     <color name="bt_light_grey">#fff6f6f6</color>
 
     <color name="bt_nav_item_background">@android:color/white</color>
@@ -26,4 +26,6 @@
     <color name="fab_color_1_muted">#ffd0d0</color>
     <color name="fab_color_2">#9c27b0</color>
     <color name="fab_color_2_muted">#a56ab0</color>
+
+    <color name="title_color">#fff</color>
 </resources>

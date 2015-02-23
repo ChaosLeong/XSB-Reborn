@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="ToolbarTheme" parent="ToolbarTheme.Base">
-        <!--<item name="popupItemBackground">@drawable/popup_item_background</item>-->
+        <item name="popupItemBackground">@drawable/popup_item_background</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>

@@ -23,28 +23,28 @@ import com.squareup.picasso.Picasso;
  */
 public class NewPostActivity extends Activity implements View.OnClickListener {
 
-    private BezelImageView avatar;
+    private BezelImageView mAvatar;
 
-    private EditText titleInput;
-    private EditText contentInput;
+    private EditText mTitleInput;
+    private EditText mContentInput;
 
-    private TextView scoreText;
-    private TextView nicknameText;
+    private TextView mScoreText;
+    private TextView mNicknameText;
 
-    private boolean sending = false;
+    private boolean mSending = false;
 
-    private Post post;
+    private Post mPost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
 
-        avatar = (BezelImageView) findViewById(R.id.avatar);
-        titleInput = (EditText) findViewById(R.id.title);
-        contentInput = (EditText) findViewById(R.id.content);
-        scoreText = (TextView) findViewById(R.id.score);
-        nicknameText = (TextView) findViewById(R.id.nickname);
+        mAvatar = (BezelImageView) findViewById(R.id.avatar);
+        mTitleInput = (EditText) findViewById(R.id.title);
+        mContentInput = (EditText) findViewById(R.id.content);
+        mScoreText = (TextView) findViewById(R.id.score);
+        mNicknameText = (TextView) findViewById(R.id.nickname);
         ImageButton sendButton = (ImageButton) findViewById(R.id.send);
         sendButton.setOnClickListener(this);
 
@@ -56,11 +56,11 @@ public class NewPostActivity extends Activity implements View.OnClickListener {
         User user = AVUser.getCurrentUser(User.class);
         if (user != null) {
             if (!TextUtils.isEmpty(user.getNickname())) {
-                nicknameText.setText(user.getNickname());
+                mNicknameText.setText(user.getNickname());
             } else {
-                nicknameText.setText(user.getUsername());
+                mNicknameText.setText(user.getUsername());
             }
-            scoreText.setText(String.format("积分：%d", user.getScore()));
+            mScoreText.setText(String.format("积分：%d", user.getScore()));
             if (!TextUtils.isEmpty(user.getAvatarUrl())) {
                 Picasso.with(this)
                         .load(user.getAvatarUrl())
@@ -68,29 +68,29 @@ public class NewPostActivity extends Activity implements View.OnClickListener {
                         .error(R.drawable.person_image_empty)
                         .resize(128, 128)
                         .centerCrop()
-                        .into(avatar);
+                        .into(mAvatar);
             }
         }
     }
 
     @Override
     public void onClick(View v) {
-        String title = titleInput.getText().toString().trim();
-        String content = contentInput.getText().toString().trim();
+        String title = mTitleInput.getText().toString().trim();
+        String content = mContentInput.getText().toString().trim();
         switch (v.getId()) {
             case R.id.send:
-                if (!sending) {
-                    sending = true;
-                    if (post == null) {
-                        post = new Post();
+                if (!mSending) {
+                    mSending = true;
+                    if (mPost == null) {
+                        mPost = new Post();
                     }
-                    post.setTitle(title);
-                    post.setContent(content);
-                    post.setUserId(User.getCurrentUser().getObjectId());
-                    post.setState(Post.STATE_TODO);
-                    post.setStartTime(System.currentTimeMillis());
-                    post.setScore(0);
-                    post.saveInBackground(new SaveCallback() {
+                    mPost.setTitle(title);
+                    mPost.setContent(content);
+                    mPost.setUser(User.getCurrentUser(User.class));
+                    mPost.setState(Post.STATE_TODO);
+                    mPost.setStartTime(System.currentTimeMillis());
+                    mPost.setScore(0);
+                    mPost.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(AVException e) {
                             if (e == null) {
@@ -99,7 +99,7 @@ public class NewPostActivity extends Activity implements View.OnClickListener {
                             } else {
                                 Toast.makeText(getApplicationContext(), "发送失败", Toast.LENGTH_SHORT).show();
                             }
-                            sending = false;
+                            mSending = false;
                         }
                     });
                 }
@@ -109,7 +109,7 @@ public class NewPostActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onBackPressed() {
-        if (sending) {
+        if (mSending) {
             return;
         }
         super.onBackPressed();

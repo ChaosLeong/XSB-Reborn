@@ -34,11 +34,15 @@
         <activity
             android:name=".posts.NewPostActivity"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.AppCompat.Light.Dialog"/>
+            android:theme="@style/Theme.AppCompat.Light.Dialog" />
 
         <activity
             android:name=".user.UserInfoActivity"
             android:launchMode="singleInstance" />
+
+        <activity
+            android:name=".posts.PostActivity"
+            android:launchMode="singleTop" />
 
     </application>
 

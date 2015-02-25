@@ -2,7 +2,7 @@
 
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light">
         <item name="actionBarIconColor">#fff</item>
-        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowBackground">@color/window_bg</item>
         <item name="toolbarStyle">@style/Toolbar</item>
         <item name="actionBarStyle">@style/ActionBar</item>
         <item name="colorPrimary">@color/primary</item>
@@ -34,6 +34,7 @@
         <item name="android:background">?attr/colorPrimary</item>
         <item name="android:minHeight">?attr/actionBarSize</item>
         <item name="android:textColorPrimary">@color/title_color</item>
+        <item name="titleTextAppearance">@style/TitleText</item>
     </style>
 
     <style name="ActionBar" parent="Widget.AppCompat.ActionBar">
@@ -81,5 +82,14 @@
         <item name="android:listSelector">?popupItemBackground</item>
         <item name="android:divider">@null</item>
         <item name="android:dividerHeight">0dp</item>
+    </style>
+
+    <style name="CommentButton">
+        <item name="android:background">@drawable/white_button_30</item>
+        <item name="android:minHeight">@dimen/btn_height</item>
+        <item name="android:minWidth">@dimen/btn_width</item>
+        <item name="android:maxHeight">@dimen/btn_height</item>
+        <item name="android:maxWidth">@dimen/btn_width</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

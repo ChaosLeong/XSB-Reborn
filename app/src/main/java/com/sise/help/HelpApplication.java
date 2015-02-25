@@ -3,6 +3,8 @@ package com.sise.help;
 import android.app.Application;
 
 import com.avos.avoscloud.AVOSCloud;
+import com.avos.avoscloud.AVObject;
+import com.sise.help.posts.Post;
 
 public class HelpApplication extends Application {
 
@@ -12,6 +14,7 @@ public class HelpApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        AVObject.registerSubclass(Post.class);
         AVOSCloud.initialize(this, APP_ID, APP_KEY);
     }
 }

@@ -1,20 +1,14 @@
 package com.sise.help.posts;
 
-import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.sise.help.user.User;
-
-import java.util.List;
 
 /**
  * @author Chaos
  *         2015/02/24.
  */
-@AVClassName("Post")
-public class Post extends AVObject {
+public class Post {
 
     private static final String OBJ_NAME = "Post";
 
@@ -29,6 +23,16 @@ public class Post extends AVObject {
 
     public static final int STATE_TODO = 0;
     public static final int STATE_COMPLETE = 1;
+
+    private AVObject post;
+
+    public Post() {
+        post = new AVObject(OBJ_NAME);
+    }
+
+    public Post(AVObject post) {
+        this.post = post;
+    }
 
     public void setTitle(String title) {
         put(FIELD_TITLE, title);
@@ -71,11 +75,11 @@ public class Post extends AVObject {
     }
 
     public User getUser() {
-        return getAVUser(FIELD_USER, User.class);
+        return post.getAVUser(FIELD_USER, User.class);
     }
 
     public User getHelpUser() {
-        return getAVUser(FILED_HELP_USER, User.class);
+        return post.getAVUser(FILED_HELP_USER, User.class);
     }
 
     public long getStartTime() {
@@ -95,12 +99,14 @@ public class Post extends AVObject {
     }
 
     private <T> T getValue(String key) {
-        return (T) get(key);
+        return (T) post.get(key);
     }
 
-    public static void queryAll(FindCallback<Post> callback){
-        AVQuery<Post> query = new AVQuery<Post>(OBJ_NAME);
-        query.orderByDescending(FIELD_START_TIME);
-        query.findInBackground(callback);
+    private void put(String key, Object value) {
+        post.put(key, value);
+    }
+
+    public void saveInBackground(SaveCallback callback) {
+        post.saveInBackground(callback);
     }
 }

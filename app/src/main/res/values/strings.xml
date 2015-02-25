@@ -24,7 +24,7 @@
     </string-array>
 
     <string-array name="drawer_tags">
-        <item>帮助他人</item>
+        <item>主页</item>
         <item>聊天信息</item>
         <item>排行榜</item>
     </string-array>
@@ -46,4 +46,6 @@
     <string name="hint_title">标题</string>
     <string name="hint_content">有什么需要帮助？</string>
     <string name="hint_score">悬赏分</string>
+    <string name="plus">+1</string>
+    <string name="comment">评论</string>
 </resources>

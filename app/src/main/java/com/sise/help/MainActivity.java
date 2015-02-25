@@ -8,8 +8,8 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
-import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -20,7 +20,6 @@ import android.view.ViewStub;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -30,7 +29,6 @@ import com.avos.avoscloud.AVUser;
 import com.sise.help.app.BaseActionBarActivity;
 import com.sise.help.chat.ChatFragment;
 import com.sise.help.feedback.FeedbackFragment;
-import com.sise.help.posts.NewPostActivity;
 import com.sise.help.posts.PostsFragment;
 import com.sise.help.rank.RanksFragment;
 import com.sise.help.settings.SettingsFragment;
@@ -53,7 +51,6 @@ public class MainActivity extends BaseActionBarActivity implements View.OnClickL
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
     private Spinner mFilter;
-    private ImageButton mCreateFab;
 
     private TextView mIntroduction;
     private TextView mName;
@@ -68,8 +65,6 @@ public class MainActivity extends BaseActionBarActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupToolbar();
-        mCreateFab = (ImageButton) findViewById(R.id.create);
-        mCreateFab.setOnClickListener(this);
     }
 
     @Override
@@ -80,7 +75,7 @@ public class MainActivity extends BaseActionBarActivity implements View.OnClickL
 
     private void setupToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setTitle("");
+        setTitle("学生帮");
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationIcon(R.drawable.ic_drawer);
         setupNavDrawer();
@@ -124,6 +119,7 @@ public class MainActivity extends BaseActionBarActivity implements View.OnClickL
                 }
             });
         }
+        mDrawerLayout.setDrawerShadow(R.drawable.bt_drawer_shadow, Gravity.START);
 
         /*Drawer Footer*/
         ViewStub viewStub = (ViewStub) findViewById(R.id.drawer_list_view_stub);
@@ -181,6 +177,7 @@ public class MainActivity extends BaseActionBarActivity implements View.OnClickL
                     }
                 }
             });
+            switchFragment(new PostsFragment());
         }
 
         setDrawerNavFooterEntry(R.id.drawer_list_settings, R.drawable.bt_ic_settings_g50_24dp, R.string.drawer_settings);
@@ -251,9 +248,6 @@ public class MainActivity extends BaseActionBarActivity implements View.OnClickL
             case R.id.drawer_list_settings:
                 switchFragment(new SettingsFragment());
                 Toast.makeText(this, "SettingsFragment", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.create:
-                startActivity(new Intent(this, AVUser.getCurrentUser() == null ? StartupActivity.class : NewPostActivity.class));
                 break;
             case R.id.chosen_account_content_view:
                 startActivity(new Intent(this, AVUser.getCurrentUser() == null ? StartupActivity.class : UserInfoActivity.class));

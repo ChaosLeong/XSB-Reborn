@@ -46,6 +46,7 @@ public class User extends AVUser {
     }
 
     public void saveAll(final SaveCallback callback) {
+        setFetchWhenSave(true);
         if (avatar != null) {
             if (getAvatarAVFile() != null) {
                 getAvatarAVFile().deleteInBackground(new DeleteCallback() {

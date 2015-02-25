@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -28,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVUser;
+import com.sise.help.app.BaseActionBarActivity;
 import com.sise.help.chat.ChatFragment;
 import com.sise.help.feedback.FeedbackFragment;
 import com.sise.help.posts.NewPostActivity;
@@ -39,10 +39,11 @@ import com.sise.help.ui.widget.BezelImageView;
 import com.sise.help.ui.widget.ScrimInsetsFrameLayout;
 import com.sise.help.user.User;
 import com.sise.help.user.UserInfoActivity;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener {
+public class MainActivity extends BaseActionBarActivity implements View.OnClickListener {
 
     /**
      * 双击 Back 键退出计时器
@@ -201,6 +202,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 if (!TextUtils.isEmpty(user.getIntroduction())) {
                     mIntroduction.setText(user.getIntroduction());
                 }
+                if (!TextUtils.isEmpty(user.getAvatarUrl())) {
+                    Picasso.with(this)
+                            .load(user.getAvatarUrl())
+                            .placeholder(R.drawable.person_image_empty)
+                            .error(R.drawable.person_image_empty)
+                            .resize(128, 128)
+                            .centerCrop()
+                            .into(mAvatar);
+                }
             }
         }
     }
@@ -243,8 +253,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 Toast.makeText(this, "SettingsFragment", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.create:
-                startActivity(new Intent(this, NewPostActivity.class));
-                Toast.makeText(this, "NewPostActivity", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, AVUser.getCurrentUser() == null ? StartupActivity.class : NewPostActivity.class));
                 break;
             case R.id.chosen_account_content_view:
                 startActivity(new Intent(this, AVUser.getCurrentUser() == null ? StartupActivity.class : UserInfoActivity.class));

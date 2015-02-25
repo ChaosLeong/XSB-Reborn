@@ -35,4 +35,15 @@
     <string name="rule_password">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ`¬!"£$%^*()~=#{}[];':,./?/*-_+&#060;&#062;&#064;&#038;\\\/</string>
     <string name="sign_in">登录</string>
     <string name="sign_up">注册</string>
+
+    <string name="new_post">求助</string>
+    <string name="new_post_title">标题</string>
+    <string name="new_post_content">求助正文内容</string>
+    <string name="new_post_score">悬赏分</string>
+
+    <string name="user_info">用户信息</string>
+    <string name="save">保存</string>
+    <string name="hint_title">标题</string>
+    <string name="hint_content">有什么需要帮助？</string>
+    <string name="hint_score">悬赏分</string>
 </resources>

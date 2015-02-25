@@ -2,7 +2,6 @@ package com.sise.help.startup;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -15,13 +14,14 @@ import com.avos.avoscloud.LogInCallback;
 import com.avos.avoscloud.SignUpCallback;
 import com.sise.help.MainActivity;
 import com.sise.help.R;
+import com.sise.help.app.BaseActionBarActivity;
 import com.sise.help.user.User;
 
 /**
  * @author Chaos
  *         2015/02/23.
  */
-public class StartupActivity extends ActionBarActivity implements View.OnClickListener {
+public class StartupActivity extends BaseActionBarActivity implements View.OnClickListener {
 
     private EditText usernameInput;
     private EditText passwordInput;

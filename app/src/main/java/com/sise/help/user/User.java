@@ -17,8 +17,13 @@ public class User extends AVUser {
     private static final String FIELD_INTRODUCTION = "introduction";
     private static final String FIELD_GENDER = "gender";
     private static final String FIELD_AVATAR = "avatar";
+    private static final String FIELD_SCORE = "score";
 
     private AVFile avatar;
+
+    public void setScore(int score) {
+        put(FIELD_SCORE, score);
+    }
 
     public void setNickname(String nickname) {
         put(FIELD_NICKNAME, nickname);
@@ -56,13 +61,17 @@ public class User extends AVUser {
                                     saveInBackground(callback);
                                 }
                             });
-                        }else{
+                        } else {
                             saveInBackground(callback);
                         }
                     }
                 });
             }
         }
+    }
+
+    public int getScore() {
+        return getValue(FIELD_SCORE);
     }
 
     public String getNickname() {
@@ -86,7 +95,10 @@ public class User extends AVUser {
     }
 
     public String getAvatarUrl() {
-        return getAvatarAVFile().getUrl();
+        if (getAvatarAVFile() != null) {
+            return getAvatarAVFile().getUrl();
+        }
+        return null;
     }
 
     private <T> T getValue(String key) {

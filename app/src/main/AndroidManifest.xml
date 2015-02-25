@@ -33,7 +33,8 @@
 
         <activity
             android:name=".posts.NewPostActivity"
-            android:launchMode="singleInstance" />
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.AppCompat.Light.Dialog"/>
 
         <activity
             android:name=".user.UserInfoActivity"

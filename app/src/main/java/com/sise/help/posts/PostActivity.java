@@ -68,19 +68,21 @@ public class PostActivity extends BaseActionBarActivity {
                     post.getUser().fetchIfNeededInBackground(new GetCallback<AVObject>() {
                         @Override
                         public void done(AVObject avObject, AVException e) {
-                            User trueUser = ((User) avObject);
-                            if (!TextUtils.isEmpty(trueUser.getNickname())) {
-                                nicknameText.setText(trueUser.getNickname());
-                            } else {
-                                nicknameText.setText(trueUser.getUsername());
+                            if (avObject!=null) {
+                                User trueUser = ((User) avObject);
+                                if (!TextUtils.isEmpty(trueUser.getNickname())) {
+                                    nicknameText.setText(trueUser.getNickname());
+                                } else {
+                                    nicknameText.setText(trueUser.getUsername());
+                                }
+                                Picasso.with(PostActivity.this)
+                                        .load(trueUser.getAvatarUrl())
+                                        .placeholder(R.drawable.person_image_empty)
+                                        .error(R.drawable.person_image_empty)
+                                        .resize(128, 128)
+                                        .centerCrop()
+                                        .into(avatar);
                             }
-                            Picasso.with(PostActivity.this)
-                                    .load(trueUser.getAvatarUrl())
-                                    .placeholder(R.drawable.person_image_empty)
-                                    .error(R.drawable.person_image_empty)
-                                    .resize(128, 128)
-                                    .centerCrop()
-                                    .into(avatar);
                         }
                     });
                 }

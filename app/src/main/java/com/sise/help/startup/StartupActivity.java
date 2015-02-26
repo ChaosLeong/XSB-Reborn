@@ -88,8 +88,9 @@ public class StartupActivity extends BaseActionBarActivity implements View.OnCli
     }
 
     private void signUp(String username, String password) {
-        AVUser user = new User();
+        User user = new User();
         user.setUsername(username);
+        user.setNickname(username);
         user.setPassword(password);
         user.signUpInBackground(new SignUpCallback() {
             @Override

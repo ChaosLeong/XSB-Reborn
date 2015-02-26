@@ -105,4 +105,8 @@ public class User extends AVUser {
     private <T> T getValue(String key) {
         return (T) get(key);
     }
+
+    public static User getCurrentUser2(){
+        return AVUser.getCurrentUser(User.class);
+    }
 }

@@ -26,6 +26,7 @@ import com.avos.avoscloud.GetCallback;
 import com.sise.help.R;
 import com.sise.help.startup.StartupActivity;
 import com.sise.help.user.User;
+import com.sise.help.user.UserInfoActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -147,29 +148,31 @@ public class PostsFragment extends Fragment implements View.OnClickListener {
             viewHolder.title.setText(post.getTitle());
             viewHolder.content.setText(post.getContent());
             viewHolder.state.setImageResource(post.getState() == Post.STATE_TODO ? R.drawable.bt_ic_snooze_amb_24dp : R.drawable.bt_ic_done_grn_24dp);
+            viewHolder.avatar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), UserInfoActivity.class);
+                    intent.putExtra("UserId", post.getUser().getObjectId());
+                    startActivity(intent);
+                }
+            });
 
             User user = post.getUser();
             if (user != null) {
-
-                user.fetchIfNeededInBackground(new GetCallback<AVObject>() {
-                    @Override
-                    public void done(AVObject avObject, AVException e) {
-                        User trueUser = ((User) avObject);
-
-                        if (!TextUtils.isEmpty(trueUser.getNickname())) {
-                            viewHolder.nickname.setText(trueUser.getNickname());
-                        } else {
-                            viewHolder.nickname.setText(trueUser.getUsername());
+                User currentUser = User.getCurrentUser2();
+                if (currentUser != null && user.getObjectId().equals(currentUser.getObjectId())) {
+                    setupUserInfo(viewHolder, currentUser);
+                }else {
+                    user.fetchIfNeededInBackground(new GetCallback<AVObject>() {
+                        @Override
+                        public void done(AVObject avObject, AVException e) {
+                            if (avObject != null) {
+                                User trueUser = ((User) avObject);
+                                setupUserInfo(viewHolder, trueUser);
+                            }
                         }
-                        Picasso.with(getActivity())
-                                .load(trueUser.getAvatarUrl())
-                                .placeholder(R.drawable.person_image_empty)
-                                .error(R.drawable.person_image_empty)
-                                .resize(128, 128)
-                                .centerCrop()
-                                .into(viewHolder.avatar);
-                    }
-                });
+                    });
+                }
             }
 
             if (onItemClickListener != null) {
@@ -180,6 +183,21 @@ public class PostsFragment extends Fragment implements View.OnClickListener {
                     }
                 });
             }
+        }
+
+        private void setupUserInfo(ViewHolder viewHolder, User user){
+            if (!TextUtils.isEmpty(user.getNickname())) {
+                viewHolder.nickname.setText(user.getNickname());
+            } else {
+                viewHolder.nickname.setText(user.getUsername());
+            }
+            Picasso.with(getActivity())
+                    .load(user.getAvatarUrl())
+                    .placeholder(R.drawable.person_image_empty)
+                    .error(R.drawable.person_image_empty)
+                    .resize(128, 128)
+                    .centerCrop()
+                    .into(viewHolder.avatar);
         }
 
         @Override

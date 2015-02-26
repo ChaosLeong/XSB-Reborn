@@ -23,7 +23,8 @@
             android:layout_marginRight="@dimen/text_size_big"
             android:src="@drawable/person_image_empty"
             android:scaleType="centerCrop"
-            app:maskDrawable="@drawable/circle_mask" />
+            app:maskDrawable="@drawable/circle_mask"
+            android:clickable="true" />
 
         <TextView
             android:id="@+id/title"

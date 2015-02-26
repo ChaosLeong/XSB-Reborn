@@ -48,4 +48,11 @@
     <string name="hint_score">悬赏分</string>
     <string name="plus">+1</string>
     <string name="comment">评论</string>
+    <string name="basic_information">基本信息</string>
+    <string name="chat">私聊</string>
+    <string name="gender">性别</string>
+    <string name="area">地区</string>
+    <string name="score">积分</string>
+    <string name="brief">简介</string>
+    <string name="edit">编辑</string>
 </resources>

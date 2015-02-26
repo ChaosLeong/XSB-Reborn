@@ -250,7 +250,14 @@ public class MainActivity extends BaseActionBarActivity implements View.OnClickL
                 Toast.makeText(this, "SettingsFragment", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.chosen_account_content_view:
-                startActivity(new Intent(this, AVUser.getCurrentUser() == null ? StartupActivity.class : UserInfoActivity.class));
+                Intent intent = new Intent();
+                if (AVUser.getCurrentUser() == null) {
+                    intent.setClass(this, StartupActivity.class);
+                } else {
+                    intent.setClass(this, UserInfoActivity.class);
+                    intent.putExtra("UserId", AVUser.getCurrentUser().getObjectId());
+                }
+                startActivity(intent);
                 break;
         }
     }

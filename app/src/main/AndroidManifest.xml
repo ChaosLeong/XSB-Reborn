@@ -38,7 +38,8 @@
 
         <activity
             android:name=".user.UserInfoActivity"
-            android:launchMode="singleInstance" />
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.Transparent" />
 
         <activity
             android:name=".posts.PostActivity"

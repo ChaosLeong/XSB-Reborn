@@ -3,68 +3,62 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginTop="0.2dp"
     app:cardCornerRadius="0dp">
 
     <RelativeLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/margin_small"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_tiny"
         android:background="?popupItemBackground"
         android:clickable="true">
 
         <com.sise.help.ui.widget.BezelImageView
             android:id="@+id/avatar"
-            android:layout_width="@dimen/avatar_small"
-            android:layout_height="@dimen/avatar_small"
+            android:layout_width="@dimen/avatar_medium"
+            android:layout_height="@dimen/avatar_medium"
             android:layout_marginRight="@dimen/text_size_big"
-            android:src="@drawable/person_image_empty"
+            android:src="@drawable/default_avatar_blue"
             android:scaleType="centerCrop"
             app:maskDrawable="@drawable/circle_mask"
             android:clickable="true" />
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:singleLine="true"
+            android:textColor="#000"
+            android:textSize="@dimen/text_size_large"
             android:layout_toRightOf="@+id/avatar"
             android:layout_alignTop="@+id/avatar"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/text_size_large"
-            tools:text="标题" />
-
-        <TextView
-            android:id="@+id/nickname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:layout_toRightOf="@+id/avatar"
-            android:layout_below="@+id/title"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/text_size_big"
+            android:layout_marginTop="@dimen/margin_tiny"
             tools:text="用户名" />
 
-        <ImageView
-            android:id="@+id/state"
+        <TextView
+            android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_medium"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            tools:src="@drawable/bt_ic_snooze_amb_24dp" />
+            android:layout_alignTop="@+id/username"
+            android:layout_alignBottom="@+id/username"
+            android:gravity="center_vertical"
+            tools:text="2014-12-25" />
 
         <TextView
             android:id="@+id/content"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:layout_toRightOf="@+id/avatar"
-            android:layout_below="@+id/nickname"
+            android:textColor="#bb000000"
             android:ellipsize="end"
-            android:textColor="@color/grey"
             android:textSize="@dimen/text_size_big"
-            tools:text="正文内容正文内容正文内容正文内容正文内容正文内容" />
+            android:layout_below="@+id/username"
+            android:layout_toRightOf="@+id/avatar"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="@dimen/margin_tiny"
+            tools:text="加油，就是不能指望你搞学生帮的后台，所以我自己做了,哦呵呵" />
     </RelativeLayout>
 </android.support.v7.widget.CardView>

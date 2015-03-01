@@ -112,6 +112,7 @@ public class UserInfoActivity extends BaseActionBarActivity implements View.OnCl
         String userId = getIntent().getStringExtra("UserId");
         if (User.getCurrentUser2() != null && userId.equals(User.getCurrentUser2().getObjectId())) {
             getMenuInflater().inflate(R.menu.menu_user_info, menu);
+            menu.findItem(R.id.exit).setVisible(true);
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -135,6 +136,10 @@ public class UserInfoActivity extends BaseActionBarActivity implements View.OnCl
                 if (!isSaving) {
                     save();
                 }
+                break;
+            case R.id.exit:
+                AVUser.logOut();
+                finish();
                 break;
         }
         return super.onOptionsItemSelected(item);

@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
+import com.sise.help.database.DatabaseManager;
 import com.sise.help.posts.Post;
 
 public class HelpApplication extends Application {
@@ -16,5 +17,9 @@ public class HelpApplication extends Application {
         super.onCreate();
         AVObject.registerSubclass(Post.class);
         AVOSCloud.initialize(this, APP_ID, APP_KEY);
+        //todo 搞回去
+        AVOSCloud.setDebugLogEnabled(true);
+
+        DatabaseManager.getInstance().init(this);
     }
 }

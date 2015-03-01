@@ -45,6 +45,26 @@
             android:name=".posts.PostActivity"
             android:launchMode="singleTop" />
 
+        <activity
+            android:name=".chat.ChatActivity"
+            android:launchMode="singleTop" />
+
+        <receiver android:name=".chat.ChatMessageReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="com.avoscloud.session.action" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="com.avos.avoscloud.PushService" />
+
+        <!--<receiver android:name="com.avos.avoscloud.AVBroadcastReceiver">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.BOOT_COMPLETED" />-->
+                <!--<action android:name="android.intent.action.USER_PRESENT" />-->
+                <!--<action android:name="com.avoscloud.chat.RETRY_CONNECT" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
     </application>
 
 </manifest>

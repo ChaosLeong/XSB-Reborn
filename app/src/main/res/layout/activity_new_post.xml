@@ -14,8 +14,8 @@
 
         <com.sise.help.ui.widget.BezelImageView
             android:id="@+id/avatar"
-            android:layout_width="@dimen/small_avatar"
-            android:layout_height="@dimen/small_avatar"
+            android:layout_width="@dimen/avatar_small"
+            android:layout_height="@dimen/avatar_small"
             android:src="@drawable/person_image_empty"
             android:scaleType="centerCrop"
             app:maskDrawable="@drawable/circle_mask"

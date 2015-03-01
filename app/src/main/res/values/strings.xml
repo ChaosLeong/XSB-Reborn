@@ -55,4 +55,6 @@
     <string name="score">积分</string>
     <string name="brief">简介</string>
     <string name="edit">编辑</string>
+    <string name="exit">注销</string>
+    <string name="none_session">暂无会话信息</string>
 </resources>

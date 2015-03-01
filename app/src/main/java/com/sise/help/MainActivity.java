@@ -26,8 +26,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.Session;
+import com.avos.avoscloud.SessionManager;
 import com.sise.help.app.BaseActionBarActivity;
-import com.sise.help.chat.ChatFragment;
+import com.sise.help.chat.SessionsFragment;
 import com.sise.help.feedback.FeedbackFragment;
 import com.sise.help.posts.PostsFragment;
 import com.sise.help.rank.RanksFragment;
@@ -40,6 +42,7 @@ import com.sise.help.user.UserInfoActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends BaseActionBarActivity implements View.OnClickListener {
 
@@ -65,6 +68,11 @@ public class MainActivity extends BaseActionBarActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupToolbar();
+
+        Session session = SessionManager.getInstance(AVUser.getCurrentUser().getObjectId());
+        List<String> users = new ArrayList<String>();
+        users.add("54eaeb49e4b03a9de67ef111");
+        session.open(users);
     }
 
     @Override
@@ -169,7 +177,7 @@ public class MainActivity extends BaseActionBarActivity implements View.OnClickL
                             switchFragment(new PostsFragment());
                             break;
                         case 2:
-                            switchFragment(new ChatFragment());
+                            switchFragment(new SessionsFragment());
                             break;
                         case 3:
                             switchFragment(new RanksFragment());
@@ -177,7 +185,7 @@ public class MainActivity extends BaseActionBarActivity implements View.OnClickL
                     }
                 }
             });
-            switchFragment(new PostsFragment());
+            switchFragment(new SessionsFragment());
         }
 
         setDrawerNavFooterEntry(R.id.drawer_list_settings, R.drawable.bt_ic_settings_g50_24dp, R.string.drawer_settings);

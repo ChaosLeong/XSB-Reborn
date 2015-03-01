@@ -3,6 +3,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="margin_tiny">8dp</dimen>
     <dimen name="margin_small">12dp</dimen>
     <dimen name="margin_big">16dp</dimen>
     <dimen name="margin_bigger">18dp</dimen>
@@ -31,12 +32,12 @@
 
     <dimen name="bt_nav_cluster_text_size">14.0sp</dimen>
 
+    <dimen name="avatar_small">48dp</dimen>
+    <dimen name="avatar_medium">56dp</dimen>
     <dimen name="avatar_big">80dp</dimen>
     <dimen name="avatar_large">96dp</dimen>
 
     <dimen name="cover_height">200dp</dimen>
-
-    <dimen name="small_avatar">48dp</dimen>
 
     <dimen name="btn_height">32dp</dimen>
     <dimen name="btn_width">48dp</dimen>

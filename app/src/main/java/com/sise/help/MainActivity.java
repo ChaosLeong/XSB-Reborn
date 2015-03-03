@@ -29,6 +29,7 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.Session;
 import com.avos.avoscloud.SessionManager;
 import com.sise.help.app.BaseActionBarActivity;
+import com.sise.help.chat.SessionService;
 import com.sise.help.chat.SessionsFragment;
 import com.sise.help.feedback.FeedbackFragment;
 import com.sise.help.posts.PostsFragment;
@@ -68,17 +69,18 @@ public class MainActivity extends BaseActionBarActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupToolbar();
-
-        Session session = SessionManager.getInstance(AVUser.getCurrentUser().getObjectId());
-        List<String> users = new ArrayList<String>();
-        users.add("54eaeb49e4b03a9de67ef111");
-        session.open(users);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         updateUserInfo();
+    }
+
+    @Override
+    protected void onDestroy() {
+        SessionService.getInstance().closeSession();
+        super.onDestroy();
     }
 
     private void setupToolbar() {
@@ -185,7 +187,7 @@ public class MainActivity extends BaseActionBarActivity implements View.OnClickL
                     }
                 }
             });
-            switchFragment(new SessionsFragment());
+            switchFragment(new PostsFragment());
         }
 
         setDrawerNavFooterEntry(R.id.drawer_list_settings, R.drawable.bt_ic_settings_g50_24dp, R.string.drawer_settings);

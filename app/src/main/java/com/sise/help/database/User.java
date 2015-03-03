@@ -8,7 +8,7 @@ public class User {
 
     private Long id;
     /** Not-null value. */
-    private String peeId;
+    private String peerId;
     private String avatarUrl;
     private String introduction;
     private String gender;
@@ -23,9 +23,9 @@ public class User {
         this.id = id;
     }
 
-    public User(Long id, String peeId, String avatarUrl, String introduction, String gender, String area, String nickname, Integer score) {
+    public User(Long id, String peerId, String avatarUrl, String introduction, String gender, String area, String nickname, Integer score) {
         this.id = id;
-        this.peeId = peeId;
+        this.peerId = peerId;
         this.avatarUrl = avatarUrl;
         this.introduction = introduction;
         this.gender = gender;
@@ -43,13 +43,13 @@ public class User {
     }
 
     /** Not-null value. */
-    public String getPeeId() {
-        return peeId;
+    public String getPeerId() {
+        return peerId;
     }
 
     /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setPeeId(String peeId) {
-        this.peeId = peeId;
+    public void setPeerId(String peerId) {
+        this.peerId = peerId;
     }
 
     public String getAvatarUrl() {

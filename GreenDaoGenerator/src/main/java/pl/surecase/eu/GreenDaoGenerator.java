@@ -18,7 +18,9 @@ public class GreenDaoGenerator {
     private void addSessionTable(Schema schema) {
         Entity session = schema.addEntity("ChatMessage");
         session.addIdProperty().primaryKey();
+        //当前登录的用户
         session.addStringProperty("peerId").notNull();
+        //私聊的另一位用户
         session.addStringProperty("otherPeerId").notNull();
         session.addBooleanProperty("isFrom").notNull();
         session.addStringProperty("msg").notNull();
@@ -28,7 +30,7 @@ public class GreenDaoGenerator {
     private void addUserTable(Schema schema) {
         Entity user = schema.addEntity("User");
         user.addIdProperty().primaryKey();
-        user.addStringProperty("peeId").notNull();
+        user.addStringProperty("peerId").unique().notNull();
         user.addStringProperty("avatarUrl");
         user.addStringProperty("introduction");
         user.addStringProperty("gender");

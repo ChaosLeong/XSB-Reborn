@@ -68,7 +68,6 @@
                     android:background="#EEEEEE"
                     android:paddingLeft="@dimen/margin_large"
                     android:text="@string/brief"
-                    android:clickable="false"
                     android:gravity="start|center_vertical"
                     android:layout_gravity="bottom"
                     android:layout_width="match_parent"

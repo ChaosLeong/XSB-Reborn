@@ -1,5 +1,6 @@
 package com.sise.help.user;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.sise.help.R;
 import com.sise.help.app.BaseActionBarActivity;
+import com.sise.help.chat.ChatActivity;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -70,25 +72,29 @@ public class UserInfoActivity extends BaseActionBarActivity implements View.OnCl
     private void fetchUserData() {
         String userId = getIntent().getStringExtra("UserId");
         mUser = User.getCurrentUser2();
-        if (mUser != null && userId.equals(mUser.getObjectId())) {
-            setupUserInfo(User.getCurrentUser2());
-        } else {
-            AVQuery<User> query = AVUser.getUserQuery(User.class);
-            query.whereEqualTo("objectId", userId);
-            query.getFirstInBackground(new GetCallback<User>() {
-                @Override
-                public void done(User user, AVException e) {
-                    mUser = user;
-                    if (user != null && e == null) {
-                        chatButton.setClickable(true);
-                        chatButton.setText(R.string.chat);
-                        setupUserInfo(user);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "加载失败", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+        if (mUser != null) {
+            if (userId.equals(mUser.getObjectId())) {
+                setupUserInfo(User.getCurrentUser2());
+                return;
+            }else {
+                chatButton.setText(R.string.chat);
+            }
         }
+        chatButton.setOnClickListener(this);
+        AVQuery<User> query = AVUser.getUserQuery(User.class);
+        query.whereEqualTo("objectId", userId);
+        query.getFirstInBackground(new GetCallback<User>() {
+            @Override
+            public void done(User user, AVException e) {
+                mUser = user;
+                if (user != null && e == null) {
+                    chatButton.setClickable(true);
+                    setupUserInfo(user);
+                } else {
+                    Toast.makeText(getApplicationContext(), "加载失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void setupUserInfo(User user) {
@@ -121,8 +127,12 @@ public class UserInfoActivity extends BaseActionBarActivity implements View.OnCl
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem edit = menu.findItem(R.id.edit);
         MenuItem save = menu.findItem(R.id.save);
-        edit.setVisible(!isEditing);
-        save.setVisible(isEditing);
+        if (edit != null) {
+            edit.setVisible(!isEditing);
+        }
+        if (save != null) {
+            save.setVisible(isEditing);
+        }
         return true;
     }
 
@@ -149,6 +159,10 @@ public class UserInfoActivity extends BaseActionBarActivity implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chat:
+                Intent intent = new Intent(this, ChatActivity.class);
+                intent.putExtra("UserId", getIntent().getStringExtra("UserId"));
+                intent.putExtra("Nickname", mUser.getNickname());
+                startActivity(intent);
                 break;
             case R.id.avatar:
                 break;

@@ -57,4 +57,5 @@
     <string name="edit">编辑</string>
     <string name="exit">注销</string>
     <string name="none_session">暂无会话信息</string>
+    <string name="input_tips">写个 HelloWorld 吧</string>
 </resources>

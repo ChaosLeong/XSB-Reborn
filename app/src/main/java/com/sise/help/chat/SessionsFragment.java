@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -17,21 +18,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.GetCallback;
-import com.avos.avoscloud.LogInCallback;
-import com.avos.avoscloud.Session;
-import com.avos.avoscloud.SessionManager;
 import com.sise.help.R;
+import com.sise.help.database.ChatMessage;
+import com.sise.help.database.DatabaseManager;
+import com.sise.help.database.UserDao;
 import com.sise.help.posts.ArrayRecyclerAdapter;
-import com.sise.help.posts.Post;
 import com.sise.help.user.User;
 import com.sise.help.user.UserInfoActivity;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 /**
  * @author Chaos
@@ -41,6 +45,8 @@ public class SessionsFragment extends Fragment {
 
     private RecyclerView sessionsView;
     private TextView noneTipsText;
+    private List<ChatMessage> chatMessages;
+    private SessionsAdapter sessionsAdapter;
 
     @Override
     public void onAttach(Activity activity) {
@@ -64,9 +70,41 @@ public class SessionsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        chatMessages = new ArrayList<ChatMessage>();
+        if (AVUser.getCurrentUser() != null) {
+            String sql = "select OTHER_PEER_ID,MSG,TIMESTAMP from CHAT_MESSAGE where PEER_ID ='" + AVUser.getCurrentUser().getObjectId() + "' GROUP BY OTHER_PEER_ID ORDER BY TIMESTAMP desc limit 1";
+            Cursor cursor = DatabaseManager.getInstance().getSession().getDatabase().rawQuery(sql, null);
+            while (cursor.moveToNext()) {
+                String otherPeerId = cursor.getString(0);
+                String msg = cursor.getString(1);
+                long timestamp = cursor.getLong(2);
+                ChatMessage chatMessage = new ChatMessage();
+                chatMessage.setMsg(msg);
+                chatMessage.setOtherPeerId(otherPeerId);
+                chatMessage.setTimestamp(timestamp);
+                chatMessages.add(chatMessage);
+            }
+            cursor.close();
+        }
+        sessionsAdapter = new SessionsAdapter();
+        sessionsView.setAdapter(sessionsAdapter);
+        sessionsAdapter.replaceWith(chatMessages);
+        sessionsAdapter.setOnItemClickListener(getActivity(), new SessionsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(ChatMessage chatMessage) {
+                Intent intent = new Intent(getActivity(), ChatActivity.class);
+                intent.putExtra("UserId", chatMessage.getOtherPeerId());
+                com.sise.help.database.User user=DatabaseManager.getInstance().getUserDao().queryBuilder().where(UserDao.Properties.PeerId.eq(chatMessage.getOtherPeerId())).unique();
+                intent.putExtra("Nickname", user.getNickname());
+                getActivity().startActivity(intent);
+            }
+        });
+        if (chatMessages.size() > 0) {
+            noneTipsText.setVisibility(View.GONE);
+        }
     }
 
-    private static class SessionsAdapter extends ArrayRecyclerAdapter<Post, SessionsAdapter.ViewHolder> {
+    private static class SessionsAdapter extends ArrayRecyclerAdapter<ChatMessage, SessionsAdapter.ViewHolder> {
 
         private OnItemClickListener onItemClickListener;
         private Context context;
@@ -83,56 +121,68 @@ public class SessionsFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(final ViewHolder viewHolder, int i) {
-            final Post post = get(i);
-            viewHolder.time.setText(post.getTitle());
-            viewHolder.content.setText(post.getContent());
+            final ChatMessage session = get(i);
+            String otherPeerId = session.getOtherPeerId();
+            QueryBuilder<com.sise.help.database.User> qb = DatabaseManager.getInstance().getUserDao().queryBuilder();
+            qb.where(UserDao.Properties.PeerId.eq(otherPeerId));
+            final com.sise.help.database.User user = qb.unique();
+
+            viewHolder.time.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA).format(session.getTimestamp()));
+            viewHolder.content.setText(session.getMsg());
             viewHolder.avatar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, UserInfoActivity.class);
-                    intent.putExtra("UserId", post.getUser().getObjectId());
+                    intent.putExtra("UserId", session.getOtherPeerId());
+                    intent.putExtra("Nickname", user.getNickname());
                     context.startActivity(intent);
                 }
             });
 
-            User user = post.getUser();
             if (user != null) {
-                User currentUser = User.getCurrentUser2();
-                if (currentUser != null && user.getObjectId().equals(currentUser.getObjectId())) {
-                    setupUserInfo(viewHolder, currentUser);
-                } else {
-                    user.fetchIfNeededInBackground(new GetCallback<AVObject>() {
-                        @Override
-                        public void done(AVObject avObject, AVException e) {
-                            if (avObject != null) {
-                                User trueUser = ((User) avObject);
-                                setupUserInfo(viewHolder, trueUser);
-                            }
+                setupUserInfo(viewHolder, user);
+            } else {
+                AVQuery<User> query = AVUser.getUserQuery(User.class);
+                query.whereEqualTo("objectId", otherPeerId);
+                query.getFirstInBackground(new GetCallback<User>() {
+                    @Override
+                    public void done(User avUser, AVException e) {
+                        if (avUser != null && e == null) {
+                            com.sise.help.database.User user = new com.sise.help.database.User();
+                            user.setPeerId(avUser.getObjectId());
+                            user.setGender(avUser.getGender());
+                            user.setArea(avUser.getArea());
+                            user.setAvatarUrl(avUser.getAvatarUrl());
+                            user.setIntroduction(avUser.getIntroduction());
+                            user.setScore(avUser.getScore());
+                            user.setNickname(avUser.getNickname());
+                            DatabaseManager.getInstance().getUserDao().insert(user);
+                            setupUserInfo(viewHolder, user);
                         }
-                    });
-                }
+                    }
+                });
             }
 
             if (onItemClickListener != null) {
                 viewHolder.container.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onItemClickListener.onItemClick();
+                        onItemClickListener.onItemClick(session);
                     }
                 });
             }
         }
 
-        private void setupUserInfo(ViewHolder viewHolder, User user) {
+        private void setupUserInfo(ViewHolder viewHolder, com.sise.help.database.User user) {
             if (!TextUtils.isEmpty(user.getNickname())) {
                 viewHolder.nickname.setText(user.getNickname());
             } else {
-                viewHolder.nickname.setText(user.getUsername());
+                viewHolder.nickname.setText("未知");
             }
             Picasso.with(context)
                     .load(user.getAvatarUrl())
-                    .placeholder(R.drawable.person_image_empty)
-                    .error(R.drawable.person_image_empty)
+                    .placeholder(R.drawable.default_avatar_blue)
+                    .error(R.drawable.default_avatar_blue)
                     .resize(128, 128)
                     .centerCrop()
                     .into(viewHolder.avatar);
@@ -145,7 +195,7 @@ public class SessionsFragment extends Fragment {
         }
 
         public interface OnItemClickListener {
-            void onItemClick();
+            void onItemClick(ChatMessage chatMessage);
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {

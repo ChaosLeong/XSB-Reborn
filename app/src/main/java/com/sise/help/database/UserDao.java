@@ -24,7 +24,7 @@ public class UserDao extends AbstractDao<User, Long> {
     */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property PeeId = new Property(1, String.class, "peeId", false, "PEE_ID");
+        public final static Property PeerId = new Property(1, String.class, "peerId", false, "PEER_ID");
         public final static Property AvatarUrl = new Property(2, String.class, "avatarUrl", false, "AVATAR_URL");
         public final static Property Introduction = new Property(3, String.class, "introduction", false, "INTRODUCTION");
         public final static Property Gender = new Property(4, String.class, "gender", false, "GENDER");
@@ -47,7 +47,7 @@ public class UserDao extends AbstractDao<User, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'USER' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
-                "'PEE_ID' TEXT NOT NULL ," + // 1: peeId
+                "'PEER_ID' TEXT NOT NULL UNIQUE ," + // 1: peerId
                 "'AVATAR_URL' TEXT," + // 2: avatarUrl
                 "'INTRODUCTION' TEXT," + // 3: introduction
                 "'GENDER' TEXT," + // 4: gender
@@ -71,7 +71,7 @@ public class UserDao extends AbstractDao<User, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindString(2, entity.getPeeId());
+        stmt.bindString(2, entity.getPeerId());
  
         String avatarUrl = entity.getAvatarUrl();
         if (avatarUrl != null) {
@@ -115,7 +115,7 @@ public class UserDao extends AbstractDao<User, Long> {
     public User readEntity(Cursor cursor, int offset) {
         User entity = new User( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.getString(offset + 1), // peeId
+            cursor.getString(offset + 1), // peerId
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // avatarUrl
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // introduction
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // gender
@@ -130,7 +130,7 @@ public class UserDao extends AbstractDao<User, Long> {
     @Override
     public void readEntity(Cursor cursor, User entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setPeeId(cursor.getString(offset + 1));
+        entity.setPeerId(cursor.getString(offset + 1));
         entity.setAvatarUrl(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setIntroduction(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setGender(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));

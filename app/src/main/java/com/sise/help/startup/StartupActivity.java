@@ -11,11 +11,15 @@ import android.widget.Toast;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
+import com.avos.avoscloud.SessionManager;
 import com.avos.avoscloud.SignUpCallback;
 import com.sise.help.MainActivity;
 import com.sise.help.R;
 import com.sise.help.app.BaseActionBarActivity;
+import com.sise.help.chat.SessionService;
 import com.sise.help.user.User;
+
+import java.util.LinkedList;
 
 /**
  * @author Chaos
@@ -83,6 +87,7 @@ public class StartupActivity extends BaseActionBarActivity implements View.OnCli
     }
 
     private void openMainActivity() {
+        SessionService.getInstance().openSession();
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
         finish();
     }

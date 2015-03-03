@@ -79,7 +79,7 @@ public class NewPostActivity extends Activity implements View.OnClickListener {
         String content = mContentInput.getText().toString().trim();
         switch (v.getId()) {
             case R.id.send:
-                if (!mSending) {
+                if (!mSending && title.length() > 0 && content.length() > 0) {
                     mSending = true;
                     if (mPost == null) {
                         mPost = new Post();

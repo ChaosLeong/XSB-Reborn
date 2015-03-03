@@ -16,12 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVMessage;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.GetCallback;
-import com.avos.avoscloud.Session;
-import com.avos.avoscloud.SessionManager;
 import com.sise.help.R;
 import com.sise.help.app.BaseActionBarActivity;
 import com.sise.help.database.ChatMessage;
@@ -33,7 +30,6 @@ import com.sise.help.user.User;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import de.greenrobot.dao.query.QueryBuilder;

@@ -71,7 +71,7 @@ public class User extends AVUser {
         }
     }
 
-    public int getScore() {
+    public Integer getScore() {
         return getValue(FIELD_SCORE);
     }
 

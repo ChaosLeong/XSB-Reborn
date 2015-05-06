@@ -1,8 +1,9 @@
 package com.sise.help.posts;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.widget.Button;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,7 +13,9 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.GetCallback;
 import com.sise.help.R;
 import com.sise.help.app.BaseActionBarActivity;
-import com.sise.help.user.User;
+import com.sise.help.posts.comment.CommentFragment;
+import com.sise.help.user.HelpUser;
+import com.sise.help.user.UserInfoActivity;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -24,9 +27,6 @@ import java.util.Locale;
  */
 public class PostActivity extends BaseActionBarActivity {
 
-    private Button likeButton;
-    private Button commentButton;
-
     private TextView nicknameText;
     private TextView updateTimeText;
     private TextView contentText;
@@ -34,13 +34,13 @@ public class PostActivity extends BaseActionBarActivity {
     private ImageView stateImage;
     private ImageView avatar;
 
+    private String userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
 
-        likeButton = (Button) findViewById(R.id.like);
-        commentButton = (Button) findViewById(R.id.comment);
         nicknameText = (TextView) findViewById(R.id.nickname);
         updateTimeText = (TextView) findViewById(R.id.updateTime);
         contentText = (TextView) findViewById(R.id.content);
@@ -52,6 +52,17 @@ public class PostActivity extends BaseActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         setupControl();
+
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!TextUtils.isEmpty(userId)) {
+                    Intent intent = new Intent(PostActivity.this, UserInfoActivity.class);
+                    intent.putExtra("UserId", userId);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     private void setupControl() {
@@ -61,6 +72,7 @@ public class PostActivity extends BaseActionBarActivity {
             @Override
             public void done(Post post, AVException e) {
                 if (post != null) {
+                    userId = post.getUser().getObjectId();
                     setTitle(post.getTitle());
                     contentText.setText(post.getContent());
                     stateImage.setImageResource(post.getState() == Post.STATE_TODO ? R.drawable.bt_ic_snooze_amb_24dp : R.drawable.bt_ic_done_grn_24dp);
@@ -68,8 +80,8 @@ public class PostActivity extends BaseActionBarActivity {
                     post.getUser().fetchIfNeededInBackground(new GetCallback<AVObject>() {
                         @Override
                         public void done(AVObject avObject, AVException e) {
-                            if (avObject!=null) {
-                                User trueUser = ((User) avObject);
+                            if (avObject != null) {
+                                HelpUser trueUser = ((HelpUser) avObject);
                                 if (!TextUtils.isEmpty(trueUser.getNickname())) {
                                     nicknameText.setText(trueUser.getNickname());
                                 } else {
@@ -88,5 +100,11 @@ public class PostActivity extends BaseActionBarActivity {
                 }
             }
         });
+
+        CommentFragment fragment = new CommentFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("PostId", postObjId);
+        fragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 }

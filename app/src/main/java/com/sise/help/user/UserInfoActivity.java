@@ -44,7 +44,7 @@ public class UserInfoActivity extends BaseActionBarActivity implements View.OnCl
     private boolean isEditing = false;
     private boolean isSaving = false;
 
-    private User mUser;
+    private HelpUser mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,21 +71,21 @@ public class UserInfoActivity extends BaseActionBarActivity implements View.OnCl
 
     private void fetchUserData() {
         String userId = getIntent().getStringExtra("UserId");
-        mUser = User.getCurrentUser2();
+        mUser = HelpUser.getCurrentUser2();
         if (mUser != null) {
             if (userId.equals(mUser.getObjectId())) {
-                setupUserInfo(User.getCurrentUser2());
+                setupUserInfo(HelpUser.getCurrentUser2());
                 return;
             }else {
                 chatButton.setText(R.string.chat);
             }
         }
         chatButton.setOnClickListener(this);
-        AVQuery<User> query = AVUser.getUserQuery(User.class);
+        AVQuery<HelpUser> query = AVUser.getUserQuery(HelpUser.class);
         query.whereEqualTo("objectId", userId);
-        query.getFirstInBackground(new GetCallback<User>() {
+        query.getFirstInBackground(new GetCallback<HelpUser>() {
             @Override
-            public void done(User user, AVException e) {
+            public void done(HelpUser user, AVException e) {
                 mUser = user;
                 if (user != null && e == null) {
                     chatButton.setClickable(true);
@@ -97,7 +97,7 @@ public class UserInfoActivity extends BaseActionBarActivity implements View.OnCl
         });
     }
 
-    private void setupUserInfo(User user) {
+    private void setupUserInfo(HelpUser user) {
         nicknameText.setText(user.getNickname());
         introductionText.setText(user.getIntroduction());
         scoreText.setText("" + user.getScore());
@@ -116,7 +116,7 @@ public class UserInfoActivity extends BaseActionBarActivity implements View.OnCl
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         String userId = getIntent().getStringExtra("UserId");
-        if (User.getCurrentUser2() != null && userId.equals(User.getCurrentUser2().getObjectId())) {
+        if (HelpUser.getCurrentUser2() != null && userId.equals(HelpUser.getCurrentUser2().getObjectId())) {
             getMenuInflater().inflate(R.menu.menu_user_info, menu);
             menu.findItem(R.id.exit).setVisible(true);
         }

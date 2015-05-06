@@ -50,8 +50,11 @@ public class ChatMessageReceiver extends AVMessageReceiver {
     @Override
     public void onMessage(Context context, Session session, AVMessage avMessage) {
         logE("onMessage");
+        //将 LeanCloud 的 Message 类型转成本地的 ChatMessage
         ChatMessage message = covertMessage(avMessage);
+        //将 ChatMessage 持久化到数据库中
         DatabaseManager.getInstance().getChatMessageDao().insert(message);
+        //遍历 messageListeners 内的所有 MessageListener，通知 Listener 接受到推送消息
         for (MessageListener listener : messageListeners) {
             listener.onMessage(message);
         }
@@ -104,14 +107,22 @@ public class ChatMessageReceiver extends AVMessageReceiver {
     }
 
     private ChatMessage covertMessage(AVMessage avMessage) {
+        //获取当前用户的 ID 属性
         String userId = AVUser.getCurrentUser().getObjectId();
+        //判断当前用户是否接收者
         boolean isFrom = avMessage.getFromPeerId() != null;
+        //创建一个 ChatMessage 实例
         ChatMessage message = new ChatMessage();
+        //设置 message 的聊天信息
         message.setMsg(avMessage.getMessage());
+        //设置当前用户的 ID 属性
         message.setPeerId(userId);
+        //设置另一用户的 ID 属性
         message.setOtherPeerId(isFrom ? avMessage.getFromPeerId() : avMessage.getToPeerIds().get(0));
         logE(message.getOtherPeerId());
+        //设置聊天信息的时间戳
         message.setTimestamp(avMessage.getTimestamp());
+        //设置当前用户是否为接收信息者
         message.setIsFrom(isFrom);
         return message;
     }

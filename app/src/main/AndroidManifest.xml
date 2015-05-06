@@ -1,12 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.sise.help">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.sise.help">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
     <application
         android:name=".HelpApplication"
@@ -21,50 +21,51 @@
             android:theme="@style/ToolbarTheme"
             android:launchMode="singleInstance">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
         <activity
             android:name=".startup.StartupActivity"
-            android:launchMode="singleTop" />
+            android:launchMode="singleTop"/>
 
         <activity
             android:name=".posts.NewPostActivity"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.AppCompat.Light.Dialog" />
+            android:theme="@style/Theme.AppCompat.Light.Dialog"/>
 
         <activity
             android:name=".user.UserInfoActivity"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.Transparent" />
+            android:theme="@style/Theme.Transparent"/>
 
         <activity
             android:name=".posts.PostActivity"
-            android:launchMode="singleTop" />
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize"/>
 
         <activity
             android:name=".chat.ChatActivity"
             android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
 
         <receiver android:name=".chat.ChatMessageReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="com.avoscloud.session.action" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="com.avoscloud.session.action"/>
             </intent-filter>
         </receiver>
 
-        <service android:name="com.avos.avoscloud.PushService" />
+        <service android:name="com.avos.avoscloud.PushService"/>
 
         <!--<receiver android:name="com.avos.avoscloud.AVBroadcastReceiver">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.BOOT_COMPLETED" />-->
-                <!--<action android:name="android.intent.action.USER_PRESENT" />-->
-                <!--<action android:name="com.avoscloud.chat.RETRY_CONNECT" />-->
-            <!--</intent-filter>-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.BOOT_COMPLETED" />-->
+        <!--<action android:name="android.intent.action.USER_PRESENT" />-->
+        <!--<action android:name="com.avoscloud.chat.RETRY_CONNECT" />-->
+        <!--</intent-filter>-->
         <!--</receiver>-->
     </application>
 

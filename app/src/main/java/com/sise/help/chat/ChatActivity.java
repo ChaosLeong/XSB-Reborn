@@ -26,7 +26,7 @@ import com.sise.help.database.ChatMessageDao;
 import com.sise.help.database.DatabaseManager;
 import com.sise.help.database.UserDao;
 import com.sise.help.posts.ArrayRecyclerAdapter;
-import com.sise.help.user.User;
+import com.sise.help.user.HelpUser;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -59,6 +59,39 @@ public class ChatActivity extends BaseActionBarActivity implements ChatMessageRe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //为发送按钮设置点击事件监听器
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //获取用户输入的聊天信息
+                String text = inputText.getText().toString().trim();
+                //创建一个 ChatMessage 实例
+                ChatMessage message = new ChatMessage();
+                //设置 message 的聊天信息
+                message.setMsg(text);
+                //保存当前用户的 ID 属性
+                message.setPeerId(AVUser.getCurrentUser().getObjectId());
+                //保存当前聊天窗口所属的用户的 ID 属性
+                message.setOtherPeerId(otherPeerId);
+                //标记当前聊天信息的时间戳
+                message.setTimestamp(System.currentTimeMillis());
+                //标记当前用户是否为接收信息者
+                message.setIsFrom(false);
+                //将当前聊天信息持久化都本地数据库中
+                DatabaseManager.getInstance().getChatMessageDao().insert(message);
+                //将该聊天内容同步到用户界面的数据集中
+                adapter.add(message);
+                //将该聊天内容显示到用户界面中
+                adapter.notifyItemInserted(adapter.getItemCount() - 1);
+                //将当前聊天界面定位到新的聊天消息中
+                messagesView.scrollToPosition(adapter.getItemCount() - 1);
+                //将当前聊天信息发送到服务器中
+                SessionService.getInstance().sendMessage(otherPeerId, text);
+                //清空聊天信息输入框
+                inputText.setText("");
+            }
+        });
         setContentView(R.layout.activity_chat);
 
         if (!getIntent().hasExtra("UserId")) {
@@ -97,16 +130,16 @@ public class ChatActivity extends BaseActionBarActivity implements ChatMessageRe
             @Override
             public void onClick(View v) {
                 String text = inputText.getText().toString().trim();
-//                ChatMessage message = new ChatMessage();
-//                message.setMsg(text);
-//                message.setPeerId(AVUser.getCurrentUser().getObjectId());
-//                message.setOtherPeerId(otherPeerId);
-//                message.setTimestamp(System.currentTimeMillis());
-//                message.setIsFrom(false);
-//                DatabaseManager.getInstance().getChatMessageDao().insert(message);
-//                adapter.add(message);
-//                adapter.notifyItemInserted(adapter.getItemCount() - 1);
-//                messagesView.scrollToPosition(adapter.getItemCount() - 1);
+                ChatMessage message = new ChatMessage();
+                message.setMsg(text);
+                message.setPeerId(AVUser.getCurrentUser().getObjectId());
+                message.setOtherPeerId(otherPeerId);
+                message.setTimestamp(System.currentTimeMillis());
+                message.setIsFrom(false);
+                DatabaseManager.getInstance().getChatMessageDao().insert(message);
+                adapter.add(message);
+                adapter.notifyItemInserted(adapter.getItemCount() - 1);
+                messagesView.scrollToPosition(adapter.getItemCount() - 1);
                 SessionService.getInstance().sendMessage(otherPeerId, text);
                 inputText.setText("");
             }
@@ -235,11 +268,11 @@ public class ChatActivity extends BaseActionBarActivity implements ChatMessageRe
             if (user != null) {
                 loadAvatar(holder, user.getAvatarUrl());
             } else {
-                AVQuery<User> query = AVUser.getUserQuery(User.class);
+                AVQuery<HelpUser> query = AVUser.getUserQuery(HelpUser.class);
                 query.whereEqualTo("objectId", message.getIsFrom() ? message.getOtherPeerId() : message.getPeerId());
-                query.getFirstInBackground(new GetCallback<User>() {
+                query.getFirstInBackground(new GetCallback<HelpUser>() {
                     @Override
-                    public void done(User avUser, AVException e) {
+                    public void done(HelpUser avUser, AVException e) {
                         if (avUser != null && e == null) {
                             com.sise.help.database.User user = new com.sise.help.database.User();
                             user.setPeerId(avUser.getObjectId());

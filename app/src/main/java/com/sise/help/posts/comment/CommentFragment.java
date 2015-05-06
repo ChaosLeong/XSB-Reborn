@@ -1,18 +1,19 @@
-package com.sise.help.posts;
+package com.sise.help.posts.comment;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,109 +21,125 @@ import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.sise.help.R;
-import com.sise.help.startup.StartupActivity;
+import com.sise.help.posts.ArrayRecyclerAdapter;
 import com.sise.help.user.HelpUser;
 import com.sise.help.user.UserInfoActivity;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author Chaos
- *         2015/02/22.
+ *         2015/04/26.
  */
-public class PostsFragment extends Fragment implements View.OnClickListener {
+public class CommentFragment extends Fragment {
 
-    private ImageButton mCreateFab;
-    private RecyclerView postsView;
+    private RecyclerView commentsView;
+
+    private EditText inputText;
+
+    private ImageButton sendButton;
+
     private SwipeRefreshLayout refreshLayout;
-    private PostsAdapter adapter;
+
+    private View commentLayout;
+
+    private CommentsAdapter adapter;
+
+    private String postId;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        activity.setTitle("主页");
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        postId = getArguments().getString("PostId");
     }
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_posts, container, false);
-        mCreateFab = (ImageButton) rootView.findViewById(R.id.create);
-        mCreateFab.setOnClickListener(this);
-
+        View rootView = inflater.inflate(R.layout.fragment_sub_comment, container, false);
+        commentLayout = rootView.findViewById(R.id.comment_layout);
         refreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swiping);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                queryPosts();
+                queryComments();
             }
         });
 
-        postsView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
-        postsView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        postsView.setItemAnimator(new DefaultItemAnimator());
-        adapter = new PostsAdapter();
-        adapter.setOnItemClickListener(new OnItemClickListener() {
+        commentsView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+        commentsView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        commentsView.setItemAnimator(new DefaultItemAnimator());
+        adapter = new CommentsAdapter();
+        commentsView.setAdapter(adapter);
+
+        inputText = (EditText) rootView.findViewById(R.id.input);
+        inputText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onItemClick(Post item) {
-                Intent intent = new Intent(getActivity(), PostActivity.class);
-                intent.putExtra("ObjId", item.getObjectId());
-                intent.putExtra("PostTitle", item.getTitle());
-                startActivity(intent);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                sendButton.setEnabled(s.toString().trim().length() > 0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
-        postsView.setAdapter(adapter);
 
+        sendButton = (ImageButton) rootView.findViewById(R.id.send);
+        if (HelpUser.getCurrentUser2() == null) {
+            commentLayout.setVisibility(View.GONE);
+        }
+        sendButton.setEnabled(false);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = inputText.getText().toString().trim();
+                inputText.setText("");
+                final Comment comment = new Comment();
+                comment.setContent(text);
+                comment.setPostId(postId);
+                comment.setUser(HelpUser.getCurrentUser2());
+                comment.setFetchWhenSave(true);
+                comment.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(AVException e) {
+                        if (e == null) {
+                            Toast.makeText(getActivity(), "评论成功", Toast.LENGTH_SHORT).show();
+                            adapter.add(0, comment);
+                            adapter.notifyItemInserted(0);
+                        } else {
+                            Toast.makeText(getActivity(), "评论失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
         return rootView;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        queryPosts();
+        queryComments();
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.create:
-                if (AVUser.getCurrentUser() == null) {
-                    startActivity(new Intent(getActivity(), StartupActivity.class));
-                } else {
-                    startActivityForResult(new Intent(getActivity(), NewPostActivity.class), 1);
-                }
-                break;
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == 1 && data != null) {
-            String title = data.getStringExtra("title");
-            String content = data.getStringExtra("content");
-            String objId = data.getStringExtra("objId");
-            Post post = new Post();
-            post.setObjectId(objId);
-            post.setTitle(title);
-            post.setContent(content);
-            post.setState(Post.STATE_TODO);
-            post.setUser(HelpUser.getCurrentUser2());
-            adapter.add(0, post);
-            adapter.notifyDataSetChanged();
-            adapter.notifyItemInserted(0);
-        }
-    }
-
-    private void queryPosts() {
+    private void queryComments() {
         refreshLayout.setRefreshing(true);
-        Post.queryAll(new FindCallback<Post>() {
+        Comment.queryAll(new FindCallback<Comment>() {
 
-            private List<Post> posts;
+            private List<Comment> comments;
 
             private int totalCount = 0;
             private int currentCount = 0;
@@ -130,56 +147,54 @@ public class PostsFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void done(AVObject user, AVException e) {
                     if (++currentCount >= totalCount) {
-                        adapter.replaceWith(posts);
+                        adapter.replaceWith(comments);
                         refreshLayout.setRefreshing(false);
                     }
                 }
             };
 
             @Override
-            public void done(List<Post> posts, AVException e) {
-                if (posts != null && e == null) {
-                    this.posts = posts;
-                    for (Post post : posts) {
-                        post.getUser().fetchIfNeededInBackground(getCallback);
+            public void done(List<Comment> comments, AVException e) {
+                if (comments != null && e == null) {
+                    this.comments = comments;
+                    for (Comment comment : comments) {
+                        if (comment.getUser() != null) {
+                            comment.getUser().fetchIfNeededInBackground(getCallback);
+                        }
                     }
-                } else {
+                }
+
+                if (e != null) {
                     Toast.makeText(getActivity(), "加载失败", Toast.LENGTH_SHORT).show();
                     refreshLayout.setRefreshing(false);
                 }
             }
-        });
+        }, postId);
     }
 
-    private class PostsAdapter extends ArrayRecyclerAdapter<Post, PostsAdapter.ViewHolder> {
-
-        private OnItemClickListener onItemClickListener;
-
-        public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-            this.onItemClickListener = onItemClickListener;
-        }
+    private class CommentsAdapter extends ArrayRecyclerAdapter<Comment, CommentsAdapter.ViewHolder> {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            return new ViewHolder(getActivity().getLayoutInflater().inflate(R.layout.item_post, viewGroup, false));
+            return new ViewHolder(getActivity().getLayoutInflater().inflate(R.layout.item_comment, viewGroup, false));
         }
 
         @Override
         public void onBindViewHolder(final ViewHolder viewHolder, int i) {
-            final Post post = get(i);
-            viewHolder.title.setText(post.getTitle());
-            viewHolder.content.setText(post.getContent());
-            viewHolder.state.setImageResource(post.getState() == Post.STATE_TODO ? R.drawable.bt_ic_snooze_amb_24dp : R.drawable.bt_ic_done_grn_24dp);
+            final Comment comment = get(i);
+            viewHolder.content.setText(comment.getContent());
+            viewHolder.time.setText(new SimpleDateFormat("MM-dd HH:mm", Locale.CHINA).format(
+                    comment.getUpdatedAt() != null ? comment.getUpdatedAt() : new Date()));
             viewHolder.avatar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), UserInfoActivity.class);
-                    intent.putExtra("UserId", post.getUser().getObjectId());
+                    intent.putExtra("UserId", comment.getUser().getObjectId());
                     startActivity(intent);
                 }
             });
 
-            HelpUser user = post.getUser();
+            HelpUser user = comment.getUser();
             if (user != null) {
                 HelpUser currentUser = HelpUser.getCurrentUser2();
                 if (currentUser != null && user.getObjectId().equals(currentUser.getObjectId())) {
@@ -195,15 +210,6 @@ public class PostsFragment extends Fragment implements View.OnClickListener {
                         }
                     });
                 }
-            }
-
-            if (onItemClickListener != null) {
-                viewHolder.container.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onItemClickListener.onItemClick(post);
-                    }
-                });
             }
         }
 
@@ -230,20 +236,16 @@ public class PostsFragment extends Fragment implements View.OnClickListener {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             private ImageView avatar;
-            private ImageView state;
-            private TextView title;
+            private TextView time;
             private TextView content;
             private TextView nickname;
-            private View container;
 
             public ViewHolder(View itemView) {
                 super(itemView);
                 avatar = (ImageView) itemView.findViewById(R.id.avatar);
-                state = (ImageView) itemView.findViewById(R.id.state);
-                title = (TextView) itemView.findViewById(R.id.title);
+                time = (TextView) itemView.findViewById(R.id.time);
                 content = (TextView) itemView.findViewById(R.id.content);
                 nickname = (TextView) itemView.findViewById(R.id.nickname);
-                container = itemView.findViewById(R.id.container);
             }
         }
     }

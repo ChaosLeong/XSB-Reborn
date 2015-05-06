@@ -4,10 +4,7 @@ import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
-import com.avos.avoscloud.SaveCallback;
-import com.sise.help.user.User;
-
-import java.util.List;
+import com.sise.help.user.HelpUser;
 
 /**
  * @author Chaos
@@ -54,11 +51,11 @@ public class Post extends AVObject {
         put(FIELD_STATE, state);
     }
 
-    public void setUser(User user) {
+    public void setUser(HelpUser user) {
         put(FIELD_USER, user);
     }
 
-    public void setHelpUser(User helpUser) {
+    public void setHelpUser(HelpUser helpUser) {
         put(FILED_HELP_USER, helpUser);
     }
 
@@ -70,12 +67,12 @@ public class Post extends AVObject {
         return getValue(FIELD_CONTENT);
     }
 
-    public User getUser() {
-        return getAVUser(FIELD_USER, User.class);
+    public HelpUser getUser() {
+        return getAVUser(FIELD_USER, HelpUser.class);
     }
 
-    public User getHelpUser() {
-        return getAVUser(FILED_HELP_USER, User.class);
+    public HelpUser getHelpUser() {
+        return getAVUser(FILED_HELP_USER, HelpUser.class);
     }
 
     public long getStartTime() {

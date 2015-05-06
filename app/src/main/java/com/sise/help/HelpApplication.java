@@ -9,6 +9,7 @@ import com.avos.avoscloud.SessionManager;
 import com.sise.help.chat.SessionService;
 import com.sise.help.database.DatabaseManager;
 import com.sise.help.posts.Post;
+import com.sise.help.posts.comment.Comment;
 
 import java.util.LinkedList;
 
@@ -21,6 +22,7 @@ public class HelpApplication extends Application {
     public void onCreate() {
         super.onCreate();
         AVObject.registerSubclass(Post.class);
+        AVObject.registerSubclass(Comment.class);
         AVOSCloud.initialize(this, APP_ID, APP_KEY);
         //todo 搞回去
         AVOSCloud.setDebugLogEnabled(true);

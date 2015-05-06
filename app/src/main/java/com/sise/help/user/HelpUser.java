@@ -10,7 +10,7 @@ import com.avos.avoscloud.SaveCallback;
  * @author Chaos
  *         2015/02/22.
  */
-public class User extends AVUser {
+public class HelpUser extends AVUser {
 
     private static final String FIELD_NICKNAME = "nickname";
     private static final String FIELD_AREA = "area";
@@ -106,7 +106,7 @@ public class User extends AVUser {
         return (T) get(key);
     }
 
-    public static User getCurrentUser2(){
-        return AVUser.getCurrentUser(User.class);
+    public static HelpUser getCurrentUser2(){
+        return AVUser.getCurrentUser(HelpUser.class);
     }
 }

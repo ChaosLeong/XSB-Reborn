@@ -1,6 +1,7 @@
 package com.sise.help.posts;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -14,7 +15,7 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.SaveCallback;
 import com.sise.help.R;
 import com.sise.help.ui.widget.BezelImageView;
-import com.sise.help.user.User;
+import com.sise.help.user.HelpUser;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -53,7 +54,7 @@ public class NewPostActivity extends Activity implements View.OnClickListener {
 
 
     private void setupControl() {
-        User user = AVUser.getCurrentUser(User.class);
+        HelpUser user = AVUser.getCurrentUser(HelpUser.class);
         if (user != null) {
             if (!TextUtils.isEmpty(user.getNickname())) {
                 mNicknameText.setText(user.getNickname());
@@ -75,35 +76,45 @@ public class NewPostActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        String title = mTitleInput.getText().toString().trim();
-        String content = mContentInput.getText().toString().trim();
         switch (v.getId()) {
             case R.id.send:
-                if (!mSending && title.length() > 0 && content.length() > 0) {
-                    mSending = true;
-                    if (mPost == null) {
-                        mPost = new Post();
-                    }
-                    mPost.setTitle(title);
-                    mPost.setContent(content);
-                    mPost.setUser(User.getCurrentUser(User.class));
-                    mPost.setState(Post.STATE_TODO);
-                    mPost.setStartTime(System.currentTimeMillis());
-                    mPost.setScore(0);
-                    mPost.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(AVException e) {
-                            if (e == null) {
-                                Toast.makeText(getApplicationContext(), "发送成功", Toast.LENGTH_SHORT).show();
-                                finish();
-                            } else {
-                                Toast.makeText(getApplicationContext(), "发送失败", Toast.LENGTH_SHORT).show();
-                            }
-                            mSending = false;
-                        }
-                    });
-                }
+                createNewPost();
                 break;
+        }
+    }
+
+    private void createNewPost() {
+        String title = mTitleInput.getText().toString().trim();
+        String content = mContentInput.getText().toString().trim();
+        if (!mSending && title.length() > 0 && content.length() > 0) {
+            mSending = true;
+            if (mPost == null) {
+                mPost = new Post();
+            }
+            mPost.setTitle(title);
+            mPost.setContent(content);
+            mPost.setUser(HelpUser.getCurrentUser(HelpUser.class));
+            mPost.setState(Post.STATE_TODO);
+            mPost.setStartTime(System.currentTimeMillis());
+            mPost.setScore(0);
+            mPost.setFetchWhenSave(true);
+            mPost.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(AVException e) {
+                    if (e == null) {
+                        Toast.makeText(getApplicationContext(), "发送成功", Toast.LENGTH_SHORT).show();
+                        Intent data = new Intent();
+                        data.putExtra("title", mPost.getTitle());
+                        data.putExtra("content", mPost.getContent());
+                        data.putExtra("objId", mPost.getObjectId());
+                        setResult(RESULT_OK, data);
+                        finish();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "发送失败", Toast.LENGTH_SHORT).show();
+                    }
+                    mSending = false;
+                }
+            });
         }
     }
 

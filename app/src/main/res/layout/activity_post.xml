@@ -56,28 +56,18 @@
         android:layout_below="@+id/avatar"
         tools:text="原始文字是人类用来紀錄特定事物、簡化圖像而成的書寫符號。文字在发展早期都是图画形式的表意文字（象形文字），與語音無甚關係，中國文字便是從此漸次演變而" />
 
-    <Button
-        android:id="@+id/like"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/content"
-        android:text="@string/plus"
-        style="@style/CommentButton" />
-
-    <Button
-        android:id="@+id/comment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/comment"
-        android:drawablePadding="0dp"
-        style="@style/CommentButton"
-        android:layout_alignTop="@+id/like"
-        android:layout_alignParentRight="true" />
-
     <View
-        android:layout_below="@+id/comment"
+        android:id="@+id/divide"
+        android:layout_below="@+id/content"
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/default_margin"
         android:layout_height="0.2dp"
         android:background="@color/grey"/>
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_below="@+id/divide"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
+        android:focusable="true"/>
 </RelativeLayout>

@@ -11,15 +11,12 @@ import android.widget.Toast;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
-import com.avos.avoscloud.SessionManager;
 import com.avos.avoscloud.SignUpCallback;
 import com.sise.help.MainActivity;
 import com.sise.help.R;
 import com.sise.help.app.BaseActionBarActivity;
 import com.sise.help.chat.SessionService;
-import com.sise.help.user.User;
-
-import java.util.LinkedList;
+import com.sise.help.user.HelpUser;
 
 /**
  * @author Chaos
@@ -92,8 +89,8 @@ public class StartupActivity extends BaseActionBarActivity implements View.OnCli
         finish();
     }
 
-    private void signUp(String username, String password) {
-        User user = new User();
+    private void signUp(final String username, final String password) {
+        HelpUser user = new HelpUser();
         user.setUsername(username);
         user.setNickname(username);
         user.setPassword(password);
@@ -102,7 +99,7 @@ public class StartupActivity extends BaseActionBarActivity implements View.OnCli
             public void done(AVException e) {
                 if (e == null) {
                     Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
-                    openMainActivity();
+                    signIn(username, password);
                 } else {
                     toast(e.getCode());
                 }

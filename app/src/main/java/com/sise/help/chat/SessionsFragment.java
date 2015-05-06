@@ -26,7 +26,7 @@ import com.sise.help.database.ChatMessage;
 import com.sise.help.database.DatabaseManager;
 import com.sise.help.database.UserDao;
 import com.sise.help.posts.ArrayRecyclerAdapter;
-import com.sise.help.user.User;
+import com.sise.help.user.HelpUser;
 import com.sise.help.user.UserInfoActivity;
 import com.squareup.picasso.Picasso;
 
@@ -142,11 +142,11 @@ public class SessionsFragment extends Fragment {
             if (user != null) {
                 setupUserInfo(viewHolder, user);
             } else {
-                AVQuery<User> query = AVUser.getUserQuery(User.class);
+                AVQuery<HelpUser> query = AVUser.getUserQuery(HelpUser.class);
                 query.whereEqualTo("objectId", otherPeerId);
-                query.getFirstInBackground(new GetCallback<User>() {
+                query.getFirstInBackground(new GetCallback<HelpUser>() {
                     @Override
-                    public void done(User avUser, AVException e) {
+                    public void done(HelpUser avUser, AVException e) {
                         if (avUser != null && e == null) {
                             com.sise.help.database.User user = new com.sise.help.database.User();
                             user.setPeerId(avUser.getObjectId());

@@ -26,8 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVUser;
-import com.avos.avoscloud.Session;
-import com.avos.avoscloud.SessionManager;
 import com.sise.help.app.BaseActionBarActivity;
 import com.sise.help.chat.SessionService;
 import com.sise.help.chat.SessionsFragment;
@@ -38,12 +36,11 @@ import com.sise.help.settings.SettingsFragment;
 import com.sise.help.startup.StartupActivity;
 import com.sise.help.ui.widget.BezelImageView;
 import com.sise.help.ui.widget.ScrimInsetsFrameLayout;
-import com.sise.help.user.User;
+import com.sise.help.user.HelpUser;
 import com.sise.help.user.UserInfoActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends BaseActionBarActivity implements View.OnClickListener {
 
@@ -199,7 +196,7 @@ public class MainActivity extends BaseActionBarActivity implements View.OnClickL
             mIntroduction.setText(R.string.thanks);
             mName.setText(getString(R.string.app_name));
             mAvatar.setImageResource(R.drawable.person_image_empty);
-            User user = AVUser.getCurrentUser(User.class);
+            HelpUser user = AVUser.getCurrentUser(HelpUser.class);
             if (user != null) {
                 if (!TextUtils.isEmpty(user.getNickname())) {
                     mName.setText(user.getNickname());

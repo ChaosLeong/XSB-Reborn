@@ -12,6 +12,7 @@ public class GreenDaoGenerator {
         generator.addUserTable(schema);
         generator.addSessionTable(schema);
         generator.addPostTable(schema);
+        generator.addCommentTable(schema);
         new DaoGenerator().generateAll(schema, args[0]);
     }
 
@@ -41,5 +42,13 @@ public class GreenDaoGenerator {
 
     private void addPostTable(Schema schema) {
 
+    }
+
+    private void addCommentTable(Schema schema) {
+        Entity comment = schema.addEntity("Comment");
+        comment.addIdProperty().primaryKey();
+        comment.addStringProperty("peerId");
+        comment.addStringProperty("postId");
+        comment.addStringProperty("content");
     }
 }

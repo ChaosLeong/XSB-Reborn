@@ -1,6 +1,8 @@
 package com.sise.help.user;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.Menu;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.GetCallback;
@@ -21,6 +24,8 @@ import com.sise.help.R;
 import com.sise.help.app.BaseActionBarActivity;
 import com.sise.help.chat.ChatActivity;
 import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
 
 /**
  * @author Chaos
@@ -45,6 +50,8 @@ public class UserInfoActivity extends BaseActionBarActivity implements View.OnCl
     private boolean isSaving = false;
 
     private HelpUser mUser;
+
+    private Uri newAvatarUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +83,7 @@ public class UserInfoActivity extends BaseActionBarActivity implements View.OnCl
             if (userId.equals(mUser.getObjectId())) {
                 setupUserInfo(HelpUser.getCurrentUser2());
                 return;
-            }else {
+            } else {
                 chatButton.setText(R.string.chat);
             }
         }
@@ -165,6 +172,9 @@ public class UserInfoActivity extends BaseActionBarActivity implements View.OnCl
                 startActivity(intent);
                 break;
             case R.id.avatar:
+                Intent getAlbum = new Intent(Intent.ACTION_GET_CONTENT);
+                getAlbum.setType("image/*");
+                startActivityForResult(getAlbum, 1);
                 break;
         }
     }
@@ -197,16 +207,61 @@ public class UserInfoActivity extends BaseActionBarActivity implements View.OnCl
             mUser.setArea(area);
 
             mUser.setFetchWhenSave(true);
-            mUser.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(AVException e) {
-                    isSaving = false;
-                    if (e == null) {
-                        setEditing(false);
-                    }
-                    Toast.makeText(getApplicationContext(), e == null ? "修改成功" : "修改失败", Toast.LENGTH_SHORT).show();
+
+            if (newAvatarUri != null) {
+                try {
+                    final AVFile file = AVFile.withAbsoluteLocalPath(AVUser.getCurrentUser().getObjectId(), FileUtils.getPath(this, newAvatarUri));
+                    file.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(AVException e) {
+                            if (e == null) {
+                                mUser.setAvatar(file.getUrl());
+                                mUser.setFetchWhenSave(true);
+                                mUser.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(AVException e) {
+                                        isSaving = false;
+                                        if (e == null) {
+                                            newAvatarUri = null;
+                                            setEditing(false);
+                                        }
+                                        Toast.makeText(getApplicationContext(), e == null ? "修改成功" : "修改失败", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(getApplicationContext(), "上传头像失败", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            });
+            } else {
+                mUser.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(AVException e) {
+                        isSaving = false;
+                        if (e == null) {
+                            newAvatarUri = null;
+                            setEditing(false);
+                        }
+                        Toast.makeText(getApplicationContext(), e == null ? "修改成功" : "修改失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == 1) {
+            newAvatarUri = data.getData();
+            Picasso.with(this)
+                    .load(newAvatarUri)
+                    .error(R.drawable.default_avatar_blue)
+                    .resize(288, 288)
+                    .centerCrop()
+                    .into(avatarImage);
         }
     }
 }
